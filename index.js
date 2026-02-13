@@ -20,7 +20,7 @@ app.post('/gemini', async (req, res) => {
     const { question } = req.body;
 
     // تصحيح اسم الموديل ليتوافق مع تحديثات جوجل
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // إرسال السؤال وانتظار النتيجة
     const result = await model.generateContent(question);
