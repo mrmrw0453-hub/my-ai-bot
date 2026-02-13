@@ -1,47 +1,37 @@
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
-
-// تفعيل استقبال بيانات JSON من روبلوكس
 app.use(express.json());
 
-// مفتاح الـ API الخاص بك (تم وضعه مباشرة لضمان الحل)
-const API_KEY = "AIzaSyD0rWCfsqoHT5LsY8GvYHvyfx0iQzXHtGs";
+const API_KEY = "AIzaSyDyKf0iFkCeHWtLe1JM5aoqQn5wDybCKxs"; 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// صفحة اختبار السيرفر (تفتحها في المتصفح للتأكد)
-app.get('/', (req, res) => {
-  res.send("السيرفر يعمل بنجاح! جاهز لاستقبال رسائل جيميناي الآن.");
-});
-
-// المسار الذي يستقبل الطلبات من روبلوكس
 app.post('/gemini', async (req, res) => {
   try {
     const { question } = req.body;
 
-    // تصحيح اسم الموديل ليتوافق مع تحديثات جوجل
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    // هنا نضع "البرومبت" الأساسي الذي سيمشي عليه الـ AI دائماً
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      systemInstruction: `
+        اسمك هو "عمرو". 
+        أنت ذكاء اصطناعي تابع لشركة "عمرو" فقط. 
+        لا تذكر أي معلومات عن شركة جوجل أو أنك موديل لغوي كبير. 
+        إذا سألك أحد من أنت، قل: "أنا عمرو، ذكاء اصطناعي مخصص لخدمة شركة عمرو".
+        يجب أن تكون إجاباتك قصيرة جداً وغير مفصلة (مختصرة).
+        يجب أن ترد بنفس اللغة التي كُتب بها السؤال (عربي للعربي، إنجليزي للإنجليزي).
+      `,
+    });
 
-    // إرسال السؤال وانتظار النتيجة
     const result = await model.generateContent(question);
     const response = await result.response;
-    const text = response.text();
-
-    // إرسال الرد النهائي لروبلوكس
-    res.json({ answer: text });
-
+    res.json({ answer: response.text() });
+    
   } catch (e) {
-    console.error("حدث خطأ:", e);
-    // إرجاع تفاصيل الخطأ للمساعدة في تتبعه إذا فشل شيء ما
-    res.status(500).json({ 
-        error: 'AI Error', 
-        details: e.message 
-    });
+    console.error("Error:", e);
+    res.status(500).json({ error: 'AI Error' });
   }
 });
 
-// تشغيل السيرفر على البورت المناسب لبيئة Render
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log("Server Running with System Prompt"));
