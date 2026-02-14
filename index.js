@@ -12,7 +12,7 @@ app.post('/gemini', async (req, res) => {
 
     // هنا نضع "البرومبت" الأساسي الذي سيمشي عليه الـ AI دائماً
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: `
         اسمك هو "عمرو". 
         أنت ذكاء اصطناعي تابع لشركة "عمرو" فقط. 
