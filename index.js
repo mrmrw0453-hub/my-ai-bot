@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
 app.use(express.json());
 
-const API_KEY = "AIzaSyDyKf0iFkCeHWtLe1JM5aoqQn5wDybCKxs"; 
+const API_KEY = "AIzaSyAmHOxzB4SaqQPqEUoYuE_pjmIAAtS1IkI"; 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 app.post('/gemini', async (req, res) => {
